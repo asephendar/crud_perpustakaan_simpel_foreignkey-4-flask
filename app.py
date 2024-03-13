@@ -105,5 +105,28 @@ def search_books():
     
     return {'data': json_data}
 
+@app.route('/filter', methods=['GET'])
+def filter_books():
+    conn = psycopg2.connect(**params)
+    
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM books WHERE category=%s", (request.args['category'],))
+    data = cursor.fetchall()
+    
+    conn.close()
+    
+    json_data = []
+
+    for el in data:
+        json_data.append({
+            'title': el[0],
+            'author': el[1],
+            'year': el[2],
+            'total_pages': el[3],
+            'category': el[4]
+        })
+    
+    return {'data': json_data}
+
 if __name__ == '__main__':
     app.run(debug=True)
