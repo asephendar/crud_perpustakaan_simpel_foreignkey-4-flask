@@ -51,5 +51,24 @@ def add_books():
     
     return {'message': 'Data is added successfully'}
 
+@app.route('/update', methods=['PUT'])
+def update_books():
+    conn = psycopg2.connect(**params)
+    
+    cursor = conn.cursor()
+    cursor.execute("UPDATE books SET title=%s, author=%s, year=%s, total_pages=%s, category=%s WHERE title=%s", (
+        request.form['title'], 
+        request.form['author'], 
+        request.form['year'], 
+        request.form['total_pages'], 
+        request.form['category'],
+        
+        request.form['title']))
+    
+    conn.commit()
+    conn.close()
+    
+    return {'message': 'Data is updated successfully'}
+
 if __name__ == '__main__':
     app.run(debug=True)
