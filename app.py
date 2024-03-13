@@ -70,5 +70,17 @@ def update_books():
     
     return {'message': 'Data is updated successfully'}
 
+@app.route('/delete', methods=['DELETE'])
+def delete_books():
+    conn = psycopg2.connect(**params)
+    
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM books WHERE title=%s", (request.form['title'],))
+    
+    conn.commit()
+    conn.close()
+    
+    return {'message': 'Data is deleted successfully'}
+
 if __name__ == '__main__':
     app.run(debug=True)
