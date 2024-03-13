@@ -34,5 +34,22 @@ def view_books():
     
     return {'data': json_data}
 
+@app.route('/add', methods=['POST'])
+def add_books():
+    conn = psycopg2.connect(**params)
+    
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO books (title , author, year, total_pages, category) VALUES (%s, %s, %s, %s, %s)", (
+        request.form['title'], 
+        request.form['author'], 
+        request.form['year'], 
+        request.form['total_pages'], 
+        request.form['category']))
+    
+    conn.commit()
+    conn.close()
+    
+    return {'message': 'Data is added successfully'}
+
 if __name__ == '__main__':
     app.run(debug=True)
