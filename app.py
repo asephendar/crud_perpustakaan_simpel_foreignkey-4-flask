@@ -82,5 +82,28 @@ def delete_books():
     
     return {'message': 'Data is deleted successfully'}
 
+@app.route('/search', methods=['GET'])
+def search_books():
+    conn = psycopg2.connect(**params)
+    
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM books WHERE title=%s", (request.args['title'],))
+    data = cursor.fetchall()
+    
+    conn.close()
+    
+    json_data = []
+
+    for el in data:
+        json_data.append({
+            'title': el[0],
+            'author': el[1],
+            'year': el[2],
+            'total_pages': el[3],
+            'category': el[4]
+        })
+    
+    return {'data': json_data}
+
 if __name__ == '__main__':
     app.run(debug=True)
